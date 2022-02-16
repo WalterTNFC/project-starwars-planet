@@ -3,10 +3,14 @@ import PropTypes from 'prop-types';
 import starWarsPlanetContext from './starWarsPlanetContext';
 
 function StarWarsProvider({ children }) {
-  const [data, setPlanet] = useState([]);
+  const [data, setData] = useState([]);
+  const [filter, setFilter] = useState('');
+  const [renderFilter, setRenderFilter] = useState(false);
+
+  const context = { data, setData, filter, setFilter, renderFilter, setRenderFilter };
 
   return (
-    <starWarsPlanetContext.Provider value={ { data, setPlanet } }>
+    <starWarsPlanetContext.Provider value={ context }>
       {children}
     </starWarsPlanetContext.Provider>
   );

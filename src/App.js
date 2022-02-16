@@ -3,6 +3,7 @@ import './App.css';
 import API from './components/API';
 import Table from './components/Table';
 import StarWarsProvider from './context/StarWarsProvider';
+import Inputs from './components/Inputs';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <StarWarsProvider>
         <API />
         <Table />
+        <Inputs />
       </StarWarsProvider>
     </div>
   );
