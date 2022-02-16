@@ -1,23 +1,30 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import starWarsPlanetContext from './starWarsPlanetContext';
+import React, { useState } from 'react';
+import StarWarsPlanetContext from './starWarsPlanetContext';
 
-function StarWarsProvider({ children }) {
+export default function StarProvider({ children }) {
   const [data, setData] = useState([]);
-  const [filter, setFilter] = useState('');
-  const [renderFilter, setRenderFilter] = useState(false);
+  const [filterName, setFilterName] = useState('');
+  const [filtroNumero, setFiltroNumero] = useState([]);
+  const [filterDone, setFilterDone] = useState([]);
 
-  const context = { data, setData, filter, setFilter, renderFilter, setRenderFilter };
+  const context = {
+    data,
+    setData,
+    filterName,
+    setFilterName,
+    filterByNumericValues: filtroNumero,
+    setFiltroNumero,
+    filterDone,
+    setFilterDone,
+  };
 
   return (
-    <starWarsPlanetContext.Provider value={ context }>
+    <StarWarsPlanetContext.Provider value={ context }>
       {children}
-    </starWarsPlanetContext.Provider>
+    </StarWarsPlanetContext.Provider>
   );
 }
-
-StarWarsProvider.propTypes = {
-  children: PropTypes.shape.isRequired,
-};
-
-export default StarWarsProvider;
+StarProvider.propTypes = {
+  children: PropTypes.shape,
+}.isRequired;

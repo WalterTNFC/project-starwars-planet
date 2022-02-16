@@ -1,11 +1,18 @@
-import React, { useContext } from 'react';
-import starWarsPlanetContext from '../context/starWarsPlanetContext';
+import React, { useContext, useEffect } from 'react';
+import StarWarsPlanetContext from '../context/starWarsPlanetContext';
 
-export default function Table2() {
-  const { data, filter } = useContext(starWarsPlanetContext);
+export default function TableFilter() {
+  const {
+    data, filterName, filterDone, setFilterDone,
+  } = useContext(StarWarsPlanetContext);
+
+  useEffect(() => {
+    setFilterDone(data);
+  }, [data, setFilterDone]);
+
   return (
     <tbody>
-      {data.filter((item) => item.name.includes(filter))
+      { filterDone.filter((item) => item.name.includes(filterName))
         .map((item, index) => (
           <tr key={ item.name + index }>
             <td>{item.name}</td>
