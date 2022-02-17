@@ -2,15 +2,17 @@ import React, { useContext, useState } from 'react';
 import StarWarsPlanetContext from '../context/starWarsPlanetContext';
 
 export default function Inputs() {
-  const { filterName, setFilterName,
+  const COLUNAS = ['population', 'orbital_period',
+    'diameter',
+    'rotation_period', 'surface_water'];
+  const COLUMN_SIZE = 4;
+  const { data, filterName, setFilterName,
     filterByNumericValues, setFiltroNumero,
     filterDone, setFilterDone } = useContext(StarWarsPlanetContext);
   const [column, setColumn] = useState('population');
   const [comparison, setComparison] = useState('maior que');
   const [valueNumber, setValue] = useState(0);
-  const [columnArr, setcolumnArr] = useState(['population', 'orbital_period',
-    'diameter',
-    'rotation_period', 'surface_water']);
+  const [columnArr, setcolumnArr] = useState(COLUNAS);
 
   const handleChange = ({ target }) => setFilterName(target.value);
 
@@ -28,18 +30,37 @@ export default function Inputs() {
       setFilterDone(filterNumber);
     });
   };
-  const handleClick = () => {
-    const filtros = [...filterByNumericValues,
-      {
-        column,
-        comparison,
-        value: valueNumber,
-      }];
-    setFiltroNumero(filtros);
+  const updateInputFilter = (param, filter) => {
+    // console.log(param);
+    param.forEach((filtro) => {
+      const filtroArr = filter.filter((columnItem) => filtro.column !== columnItem);
+      // console.log(filtroArr);
+      setcolumnArr(filtroArr);
+      setColumn(filtroArr[0]);
+    });
+  };
 
-    filterNumeric(filtros);
-    const columnArrFilter = columnArr.filter((item) => item !== column);
-    setcolumnArr(columnArrFilter);
+  const handleClick = () => {
+    if (filterByNumericValues.length <= COLUMN_SIZE) {
+      const filtros = [...filterByNumericValues,
+        { column, comparison, value: valueNumber }];
+
+      setFiltroNumero(filtros);
+      filterNumeric(filtros);
+      updateInputFilter(filtros, columnArr);
+    }
+  };
+
+  const deleteFilter = ({ target: { id } }) => {
+    const updateFilters = filterByNumericValues.filter((item) => item.column !== id);
+    const newColumns = [...columnArr, id];
+    setFiltroNumero(updateFilters);
+    if (updateFilters.length === 0) {
+      return setFilterDone(data);
+    }
+
+    filterNumeric(updateFilters);
+    setcolumnArr(newColumns); // A opção retorna pro input.
   };
 
   return (
@@ -96,5 +117,17 @@ export default function Inputs() {
       >
         Adicionar Filtro
       </button>
+      {filterByNumericValues.length > 0 && filterByNumericValues.map((item, index) => (
+        <div data-testid="filter" key={ item.column + index }>
+          <span>{`${item.column} ${item.comparison} ${item.value}`}</span>
+          <button
+            type="button"
+            id={ item.column }
+            onClick={ (e) => deleteFilter(e) }
+          >
+            X
+          </button>
+        </div>
+      ))}
     </div>);
 }
