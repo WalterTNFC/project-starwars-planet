@@ -8,6 +8,8 @@ export default function StarProvider({ children }) {
   const [filtroNumero, setFiltroNumero] = useState([]);
   const [filterDone, setFilterDone] = useState([]);
 
+  const [columnOrganize, setColumnOrganize] = useState('name');
+  const [sortOrganize, setSortOrganize] = useState('ASC');
   const context = {
     data,
     setData,
@@ -17,6 +19,12 @@ export default function StarProvider({ children }) {
     setFiltroNumero,
     filterDone,
     setFilterDone,
+    order: {
+      column: columnOrganize,
+      sort: sortOrganize,
+    },
+    setColumnOrganize,
+    setSortOrganize,
   };
 
   return (

@@ -7,16 +7,19 @@ export default function Inputs() {
     'rotation_period', 'surface_water'];
   const COLUMN_SIZE = 4;
   const { data, filterName, setFilterName,
-    filterByNumericValues, setFiltroNumero,
-    filterDone, setFilterDone } = useContext(StarWarsPlanetContext);
+    filterDone, filterByNumericValues, setFiltroNumero,
+    setFilterDone,
+    columnOrganize, setColumnOrganize,
+    setSortOrganize } = useContext(StarWarsPlanetContext);
   const [column, setColumn] = useState('population');
   const [comparison, setComparison] = useState('maior que');
   const [valueNumber, setValue] = useState(0);
-  const [columnArr, setcolumnArr] = useState(COLUNAS);
+  const [columnArr, setColumnArr] = useState(COLUNAS);
 
   const handleChange = ({ target }) => setFilterName(target.value);
 
   const filterNumeric = (array) => {
+    setFilterDone(data);
     array.forEach((filtro) => {
       const filterNumber = filterDone
         .filter((item) => {
@@ -31,11 +34,9 @@ export default function Inputs() {
     });
   };
   const updateInputFilter = (param, filter) => {
-    // console.log(param);
     param.forEach((filtro) => {
       const filtroArr = filter.filter((columnItem) => filtro.column !== columnItem);
-      // console.log(filtroArr);
-      setcolumnArr(filtroArr);
+      setColumnArr(filtroArr);
       setColumn(filtroArr[0]);
     });
   };
@@ -55,18 +56,17 @@ export default function Inputs() {
     const updateFilters = filterByNumericValues.filter((item) => item.column !== id);
     const newColumns = [...columnArr, id];
     setFiltroNumero(updateFilters);
-    if (updateFilters.length === 0) {
-      return setFilterDone(data);
-    }
+    setColumnArr(newColumns);
+    setColumn(newColumns[0]);
 
     filterNumeric(updateFilters);
-    setcolumnArr(newColumns); // A opção retorna pro input.
   };
 
   return (
     <div>
       <input
         data-testid="name-filter"
+        placeholder="Filtrar por nome"
         type="text"
         value={ filterName }
         onChange={ (e) => handleChange(e) }
@@ -100,16 +100,13 @@ export default function Inputs() {
           <option value="igual a">igual a</option>
         </select>
       </label>
-      <label htmlFor="value-filter">
-        Filtro Número
-        <input
-          id="value-filter"
-          data-testid="value-filter"
-          type="number"
-          value={ valueNumber }
-          onChange={ (e) => setValue(e.target.value) }
-        />
-      </label>
+      <input
+        id="value-filter"
+        data-testid="value-filter"
+        type="number"
+        value={ valueNumber }
+        onChange={ (e) => setValue(e.target.value) }
+      />
       <button
         onClick={ handleClick }
         data-testid="button-filter"
@@ -117,6 +114,57 @@ export default function Inputs() {
       >
         Adicionar Filtro
       </button>
+      <div>
+        <select
+          data-testid="column-sort"
+          onChange={ (e) => setColumnOrganize(e.target.value) }
+          id="column-organize"
+          value={ columnOrganize }
+        >
+          {COLUNAS.map((item, index) => (
+            <option
+              key={ item + index }
+              value={ item }
+            >
+              {item}
+            </option>
+          ))}
+        </select>
+        <div>
+          <label
+            data-testid="column-sort-input-asc"
+            htmlFor="ascendente"
+          >
+            <input
+              type="radio"
+              id="ascendente"
+              name="sort"
+              value="ASC"
+              onClick={ (e) => setSortOrganize(e.target.value) }
+            />
+            Ascendente
+          </label>
+          <label
+            data-testid="column-sort-input-desc"
+            htmlFor="descendente"
+          >
+            <input
+              type="radio"
+              id="descendente"
+              name="sort"
+              value="DESC"
+              onClick={ (e) => setSortOrganize(e.target.value) }
+            />
+            Descendente
+          </label>
+          <button
+            type="button"
+            data-testid="column-sort-button"
+          >
+            Organizar
+          </button>
+        </div>
+      </div>
       {filterByNumericValues.length > 0 && filterByNumericValues.map((item, index) => (
         <div data-testid="filter" key={ item.column + index }>
           <span>{`${item.column} ${item.comparison} ${item.value}`}</span>
